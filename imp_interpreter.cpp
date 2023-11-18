@@ -19,6 +19,15 @@ int ImpInterpreter::visit(Body* b) {
   return 0;
 }
 
+// B/C
+int ImpInterpreter::visit(LoBody* b) {
+  env.add_level(); 
+  b->var_decs->accept(this);
+  b->slist->accept(this);
+  env.remove_level();  
+  return 0;
+}
+
 
 int ImpInterpreter::visit(VarDecList* decs) {
   list<VarDec*>::iterator it;
@@ -37,6 +46,15 @@ int ImpInterpreter::visit(VarDec* vd) {
 }
 
 int ImpInterpreter::visit(StatementList* s) {
+  list<Stm*>::iterator it;
+  for (it = s->slist.begin(); it != s->slist.end(); ++it) {
+    (*it)->accept(this);
+  }
+  return 0;
+}
+
+// B/C
+int ImpInterpreter::visit(LoStatementList* s) {
   list<Stm*>::iterator it;
   for (it = s->slist.begin(); it != s->slist.end(); ++it) {
     (*it)->accept(this);
@@ -74,7 +92,7 @@ int ImpInterpreter::visit(IfStatement* s) {
 
 int ImpInterpreter::visit(WhileStatement* s) {
  while (s->cond->accept(this)) {
-    s->body->accept(this);
+    s->lobody->accept(this);            // B/C
   }
  return 0;
 }
@@ -83,7 +101,7 @@ int ImpInterpreter::visit(WhileStatement* s) {
 int ImpInterpreter::visit(DoWhileStatement* s) {
   do
   {
-    s->body->accept(this);
+    s->lobody->accept(this);          // B/C
   } while (s->cond->accept(this));
   return 0;
 }
@@ -95,10 +113,22 @@ int ImpInterpreter::visit(ForStatement* s) {
   env.add_var(s->id);
   for (int i = n1; i <= n2; i++) {
     env.update(s->id,i);
-    s->body->accept(this);
+    s->lobody->accept(this);              // B/C
   }
   env.remove_level();
  return 0;
+}
+
+// B/C
+int ImpInterpreter::visit(BreakStatement* s) {
+  // TODO?
+  return 0;
+}
+
+// B/C
+int ImpInterpreter::visit(ContinueStatement* s) {
+  // TODO?
+  return 0;
 }
 
 int ImpInterpreter::visit(BinaryExp* e) {

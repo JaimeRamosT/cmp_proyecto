@@ -16,6 +16,13 @@ int ImpPrinter::visit(Body * b) {
   return 0;
 }
 
+// B/C
+int ImpPrinter::visit(LoBody* b) {
+  b->var_decs->accept(this);
+  b->slist->accept(this);
+  return 0;
+}
+
 int ImpPrinter::visit(VarDecList* s) {
   list<VarDec*>::iterator it;
   for (it = s->vdlist.begin(); it != s->vdlist.end(); ++it) {
@@ -38,6 +45,16 @@ int ImpPrinter::visit(VarDec* vd) {
 }
 
 int ImpPrinter::visit(StatementList* s) {
+  list<Stm*>::iterator it;
+  for (it = s->slist.begin(); it != s->slist.end(); ++it) {
+    (*it)->accept(this);
+    cout << ";" << endl;
+  }
+  return 0;
+}
+
+// B/C
+int ImpPrinter::visit(LoStatementList* s) {
   list<Stm*>::iterator it;
   for (it = s->slist.begin(); it != s->slist.end(); ++it) {
     (*it)->accept(this);
@@ -76,15 +93,14 @@ int ImpPrinter::visit(WhileStatement* s) {
   cout << "while (";
   s->cond->accept(this);
   cout << ") do" << endl;
-  s->body->accept(this);
+  s->lobody->accept(this);          // B/C
   cout << "endwhile";
   return 0;
 }
 
-// DW
 int ImpPrinter::visit(DoWhileStatement* s) {
   cout << "do" << endl;
-  s->body->accept(this);
+  s->lobody->accept(this);            // B/C
   cout << "while (";
   s->cond->accept(this);
   cout << ")";
@@ -97,8 +113,20 @@ int ImpPrinter::visit(ForStatement* s) {
   cout << " , " << endl;
   s->e2->accept(this);
   cout << "do" << endl;
-  s->body->accept(this);
+  s->lobody->accept(this);
   cout << "endwhile";
+  return 0;
+}
+
+// B/C
+int ImpPrinter::visit(BreakStatement* s) {
+  cout << "break";
+  return 0;
+}
+
+// B/C
+int ImpPrinter::visit(ContinueStatement* s) {
+  cout << "continue";
   return 0;
 }
 

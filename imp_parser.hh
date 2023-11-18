@@ -57,6 +57,8 @@ private:
   VarDec* parseVarDec();
   StatementList* parseStatementList();
   Stm* parseStatement();
+  LoBody* parseLoBody();                    // B/C
+  LoStatementList* parseLoStatementList();  // B/C
   Exp* parseExp();
   Exp* parseBExp();
   Exp* parseCExp();

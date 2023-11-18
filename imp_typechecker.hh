@@ -21,15 +21,19 @@ public:
   void typecheck(Program*);
   void visit(Program*);
   void visit(Body*);
+  void visit(LoBody*);                  // B/C
   void visit(VarDecList*);
   void visit(VarDec*);
   void visit(StatementList*);
+  void visit(LoStatementList*);         // B/C
   void visit(AssignStatement*);
   void visit(PrintStatement*);
   void visit(IfStatement*);
   void visit(WhileStatement*);
   void visit(DoWhileStatement*);       // DW
   void visit(ForStatement*);
+  void visit(BreakStatement*);        // B/C
+  void visit(ContinueStatement*);       // B/C
   
   ImpType visit(BinaryExp* e);
   ImpType visit(UnaryExp* e);

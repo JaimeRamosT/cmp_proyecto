@@ -255,14 +255,12 @@ StatementList* Parser::parseStatementList() {
   return p;
 }
 
-/*
-  id = exp
-  print(x)
- */
+// B/C
 Stm* Parser::parseStatement() {
   Stm* s = NULL;
   Exp* e;
   Body *tb, *fb;
+  LoBody* lb;                             // B/C
   if (match(Token::ID)) {
     string lex = previous->lexema;
     if (!match(Token::ASSIGN)) {
@@ -298,16 +296,16 @@ Stm* Parser::parseStatement() {
     e = parseExp();
     if (!match(Token::DO))
       parserError("Esperaba 'do'");
-    tb = parseBody();
+    lb = parseLoBody();
     if (!match(Token::ENDWHILE))
 	    parserError("Esperaba 'endwhile'");
-    s = new WhileStatement(e,tb);
+    s = new WhileStatement(e,lb);
   } else if (match(Token::DO)) {      // DW
-    tb = parseBody();
+    lb = parseLoBody();
     if (!match(Token::WHILE)) 
       parserError("Esperata 'while'");
     e = parseExp();
-    s = new DoWhileStatement(tb, e);
+    s = new DoWhileStatement(lb, e);
   } else if (match(Token::FOR)) {
     string var;
     Exp* e2;
@@ -318,15 +316,51 @@ Stm* Parser::parseStatement() {
     if (!match(Token::COMMA)) parserError("Esperaba COMMA en for");
     e2 = parseExp();
     if (!match(Token::DO)) parserError("Esperaba DO en for");
-    tb = parseBody();
+    lb = parseLoBody();
     if (!match(Token::ENDFOR)) parserError("Esperaba ENDFOR en for");
-    s = new ForStatement(var,e,e2,tb);
+    s = new ForStatement(var,e,e2,lb);
   }
   else {
     cout << "No se encontro Statement" << endl;
     exit(0);
   }
   return s;
+}
+
+// B/C
+LoStatementList* Parser::parseLoStatementList() {
+  //cout << "----------------------------------------------------------------" << endl;
+  LoStatementList* p = new LoStatementList();
+  Stm* s;
+  if (match(Token::BREAK)){
+    s = new BreakStatement();
+  } else if(match(Token::CONTINUE)){
+    s = new ContinueStatement();
+  } else{
+    s = parseStatement();
+  }
+  p->add(s);
+  while(match(Token::SEMICOLON)) {
+    if (match(Token::BREAK)) {
+      //cout << "Break leido" << endl;
+      s = new BreakStatement();
+      p->add(s);
+    } else if(match(Token::CONTINUE)){
+      s = new ContinueStatement();
+      p->add(s);
+    } else{
+      p->add(parseStatement());
+    }
+  }
+  //cout << "Salida de lostatement lsit" << endl;
+  return p;
+}
+
+// B/C
+LoBody* Parser::parseLoBody() {
+  VarDecList* vdl = parseVarDecList();
+  LoStatementList* sl = parseLoStatementList();
+  return new LoBody(vdl, sl);
 }
 
 Exp* Parser::parseExp() {

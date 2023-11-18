@@ -100,27 +100,35 @@ ImpType CondExp::accept(TypeVisitor* v) {
 AssignStatement::AssignStatement(string id, Exp* e):id(id), rhs(e) { }
 PrintStatement::PrintStatement(Exp* e):e(e) { }
 IfStatement::IfStatement(Exp* c,Body *tb, Body* fb):cond(c),tbody(tb), fbody(fb) { }
-WhileStatement::WhileStatement(Exp* c,Body *b):cond(c),body(b) { }
-DoWhileStatement::DoWhileStatement(Body* b, Exp* c):body(b), cond(c){}          // DW
-ForStatement::ForStatement(string id, Exp* e1,Exp* e2, Body *b):id(id),e1(e1),e2(e2), body(b) { }
+WhileStatement::WhileStatement(Exp* c, LoBody *lb):cond(c),lobody(lb) { }             // B/C
+DoWhileStatement::DoWhileStatement(LoBody* lb, Exp* c):lobody(lb), cond(c){}          // DW; W/C
+ForStatement::ForStatement(string id, Exp* e1,Exp* e2, LoBody *lb):id(id),e1(e1),e2(e2), lobody(lb) { } // B/C
+BreakStatement::BreakStatement() { }                    // B/C
+ContinueStatement::ContinueStatement() { }                    // B/C
 
 StatementList::StatementList():slist() {}
 VarDec::VarDec(string type, list<string> vars):type(type), vars(vars) {}
 VarDecList::VarDecList():vdlist() {}
 Body::Body(VarDecList* vdl, StatementList* sl):var_decs(vdl), slist(sl) {}
+LoStatementList::LoStatementList():slist() {}                     // B/C
+LoBody::LoBody(VarDecList* vdl, LoStatementList* sl): var_decs(vdl), slist(sl) {}   // B/C
 Program::Program(Body* b):body(b) {}
 
 Stm::~Stm() {}
 AssignStatement::~AssignStatement() { delete rhs; }
 PrintStatement::~PrintStatement() { delete e; }
 IfStatement::~IfStatement() { delete fbody; delete tbody; delete cond; }
-WhileStatement::~WhileStatement() { delete body; delete cond; }
-DoWhileStatement::~DoWhileStatement() { delete body; delete cond; }       // DW
-ForStatement::~ForStatement() { delete body; delete e2; delete e1; }
+WhileStatement::~WhileStatement() { delete lobody; delete cond; }
+DoWhileStatement::~DoWhileStatement() { delete lobody; delete cond; }       // DW
+ForStatement::~ForStatement() { delete lobody; delete e2; delete e1; }
+BreakStatement::~BreakStatement() {}
+ContinueStatement::~ContinueStatement() {}
 
 StatementList::~StatementList() { }
+LoStatementList::~LoStatementList() { }
 VarDec::~VarDec() { }
 VarDecList::~VarDecList() { }
+LoBody::~LoBody() { }
 Body::~Body() { delete slist; delete var_decs; }
 Program::~Program() { delete body; }
 
@@ -148,9 +156,27 @@ int ForStatement::accept(ImpVisitor* v) {
   return v->visit(this);
 }
 
+// B/C
+int BreakStatement::accept(ImpVisitor* v) {
+  return v->visit(this);
+}
+
+// B/C
+int ContinueStatement::accept(ImpVisitor* v) {
+  return v->visit(this);
+}
+
 void StatementList::add(Stm* s) { slist.push_back(s);  }
 
+// B/C
+void LoStatementList::add(Stm* s) { slist.push_back(s);}
+
 int StatementList::accept(ImpVisitor* v) {
+  return v->visit(this);
+}
+
+// B/C
+int LoStatementList::accept(ImpVisitor* v) {
   return v->visit(this);
 }
 
@@ -161,6 +187,11 @@ int VarDec::accept(ImpVisitor* v) {
 void VarDecList::add(VarDec* vd) { vdlist.push_back(vd);  }
 
 int VarDecList::accept(ImpVisitor* v) {
+  return v->visit(this);
+}
+
+// B/C
+int LoBody::accept(ImpVisitor* v) {
   return v->visit(this);
 }
 
@@ -197,8 +228,21 @@ void ForStatement::accept(TypeVisitor* v) {
   return v->visit(this);
 }
 
+// B/C
+void ContinueStatement::accept(TypeVisitor* v) {
+  return v->visit(this);
+}
+
+void BreakStatement::accept(TypeVisitor* v) {
+  return v->visit(this);
+}
 
 void StatementList::accept(TypeVisitor* v) {
+  return v->visit(this);
+}
+
+// B/C
+void LoStatementList::accept(TypeVisitor* v) {
   return v->visit(this);
 }
 
@@ -207,6 +251,11 @@ void VarDec::accept(TypeVisitor* v) {
 }
 
 void VarDecList::accept(TypeVisitor* v) {
+  return v->visit(this);
+}
+
+// B/C
+void LoBody::accept(TypeVisitor* v) {
   return v->visit(this);
 }
 

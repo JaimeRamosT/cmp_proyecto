@@ -55,6 +55,18 @@ int ImpCodeGen::visit(Body * b) {
   return 0;
 }
 
+// B/C
+int ImpCodeGen::visit(LoBody * b) {
+  int dir = siguiente_direccion;
+  direcciones.add_level();  
+  b->var_decs->accept(this);
+  b->slist->accept(this);
+  direcciones.remove_level();
+  if (siguiente_direccion > mem_locals) mem_locals = siguiente_direccion;
+  siguiente_direccion = dir;
+  return 0;
+}
+
 int ImpCodeGen::visit(VarDecList* s) {
   list<VarDec*>::iterator it;
   for (it = s->vdlist.begin(); it != s->vdlist.end(); ++it) {
@@ -72,6 +84,15 @@ int ImpCodeGen::visit(VarDec* vd) {
 }
 
 int ImpCodeGen::visit(StatementList* s) {
+  list<Stm*>::iterator it;
+  for (it = s->slist.begin(); it != s->slist.end(); ++it) {
+    (*it)->accept(this);
+  }
+  return 0;
+}
+
+// B/C
+int ImpCodeGen::visit(LoStatementList* s) {
   list<Stm*>::iterator it;
   for (it = s->slist.begin(); it != s->slist.end(); ++it) {
     (*it)->accept(this);
@@ -109,13 +130,13 @@ int ImpCodeGen::visit(IfStatement* s) {
 }
 
 int ImpCodeGen::visit(WhileStatement* s) {
-  string l1 = next_label();
-  string l2 = next_label();
+  string l1 = next_label();         // L1: Evaluación de expresión
+  string l2 = next_label();         // L2: Salida de iterador
 
   codegen(l1,"skip");
   s->cond->accept(this);
   codegen(nolabel,"jmpz",l2);
-  s->body->accept(this);
+  s->lobody->accept(this);            // B/C
   codegen(nolabel,"goto",l1);
   codegen(l2,"skip");
 
@@ -124,14 +145,14 @@ int ImpCodeGen::visit(WhileStatement* s) {
 
 // DW
 int ImpCodeGen::visit(DoWhileStatement* s) {
-  string l1 = next_label();
-  string l2 = next_label();
-  string l3 = next_label();
+  string l1 = next_label();         // L1: Inicio de cuerpo
+  string l2 = next_label();         // L2: Evaluación de expresión
+  string l3 = next_label();         // L3: Salida de iterador
 
   codegen(l1, "skip");
-  s->body->accept(this);
+  s->lobody->accept(this);                // B/C
+  codegen(l2, "skip");                    // B/C
   s->cond->accept(this);
-  codegen(l2, "skip");
   codegen(nolabel, "jmpn", l1);
   codegen(l3, "skip");
 
@@ -139,6 +160,20 @@ int ImpCodeGen::visit(DoWhileStatement* s) {
 }
 
 int ImpCodeGen::visit(ForStatement* s) {
+  return 0;
+}
+
+// B/C
+int ImpCodeGen::visit(BreakStatement* s) {
+  auto obj = "L" + to_string(current_label-1);
+  codegen(nolabel, "goto", obj);
+  return 0;
+}
+
+// B/C
+int ImpCodeGen::visit(ContinueStatement* s) {
+  auto obj = "L" + to_string(current_label-2);
+  codegen(nolabel, "goto", obj);
   return 0;
 }
 

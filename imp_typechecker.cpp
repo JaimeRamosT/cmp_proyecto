@@ -24,6 +24,15 @@ void ImpTypeChecker::visit(Body* b) {
   return;
 }
 
+// B/C
+void ImpTypeChecker::visit(LoBody* b) {
+  env.add_level();
+  b->var_decs->accept(this);
+  b->slist->accept(this);
+  env.remove_level();  
+  return;
+}
+
 void ImpTypeChecker::visit(VarDecList* decs) {
   list<VarDec*>::iterator it;
   for (it = decs->vdlist.begin(); it != decs->vdlist.end(); ++it) {
@@ -48,6 +57,15 @@ void ImpTypeChecker::visit(VarDec* vd) {
 
 
 void ImpTypeChecker::visit(StatementList* s) {
+  list<Stm*>::iterator it;
+  for (it = s->slist.begin(); it != s->slist.end(); ++it) {
+    (*it)->accept(this);
+  }
+  return;
+}
+
+// B/C
+void ImpTypeChecker::visit(LoStatementList* s) {
   list<Stm*>::iterator it;
   for (it = s->slist.begin(); it != s->slist.end(); ++it) {
     (*it)->accept(this);
@@ -90,13 +108,13 @@ void ImpTypeChecker::visit(WhileStatement* s) {
     cout << "Condicional en WhileStm debe de ser: " << booltype << endl;
     exit(0);
   }  
-  s->body->accept(this);
+  s->lobody->accept(this);                      // B/C
  return;
 }
 
 // DW
 void ImpTypeChecker::visit(DoWhileStatement* s) {
-  s->body->accept(this);
+  s->lobody->accept(this);                          // B/C
   if (!s->cond->accept(this).match(booltype)) {
     cout << "Condicional en DoWhileStm debe de ser: " << booltype << endl;
     exit(0);
@@ -113,9 +131,19 @@ void ImpTypeChecker::visit(ForStatement* s) {
   }
   env.add_level();
   env.add_var(s->id,inttype);
-  s->body->accept(this);
+  s->lobody->accept(this);                          // B/C
   env.remove_level();
  return;
+}
+
+// B/C
+void ImpTypeChecker::visit(BreakStatement* s) {
+  return;
+}
+
+// B/C
+void ImpTypeChecker::visit(ContinueStatement* s) {
+  return;
 }
 
 ImpType ImpTypeChecker::visit(BinaryExp* e) {
