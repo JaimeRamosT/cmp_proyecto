@@ -75,9 +75,18 @@ int ImpPrinter::visit(IfStatement* s) {
 int ImpPrinter::visit(WhileStatement* s) {
   cout << "while (";
   s->cond->accept(this);
-  cout << ") do" << endl;;
+  cout << ") do" << endl;
   s->body->accept(this);
   cout << "endwhile";
+  return 0;
+}
+
+int ImpPrinter::visit(DoWhileStatement* s) {
+  cout << "do" << endl;
+  s->body->accept(this);
+  cout << "while (";
+  s->cond->accept(this);
+  cout << ")";
   return 0;
 }
 

@@ -298,8 +298,14 @@ Stm* Parser::parseStatement() {
       parserError("Esperaba 'do'");
     tb = parseBody();
     if (!match(Token::ENDWHILE))
-	parserError("Esperaba 'endwhile'");
+	    parserError("Esperaba 'endwhile'");
     s = new WhileStatement(e,tb);
+  } else if (match(Token::DO)) {
+    tb = parseBody();
+    if (!match(Token::WHILE)) 
+      parserError("Esperata 'while'");
+    e = parseExp();
+    s = new DoWhileStatement(tb, e);
   } else if (match(Token::FOR)) {
     string var;
     Exp* e2;
