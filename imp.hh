@@ -104,6 +104,10 @@ public:
 class StatementList;
 class Body;
 
+// B/C
+class LoStatementList;
+class LoBody;
+
 class AssignStatement : public Stm {
 public:
   string id;
@@ -136,8 +140,8 @@ public:
 class WhileStatement : public Stm {
 public:
   Exp* cond;
-  Body *body;
-  WhileStatement(Exp* c, Body* b);
+  LoBody *lobody;                         // B/C
+  WhileStatement(Exp* c, LoBody* lb);
   int accept(ImpVisitor* v);
   void accept(TypeVisitor* v);
   ~WhileStatement();
@@ -147,8 +151,8 @@ public:
 class DoWhileStatement : public Stm {     
 public:
   Exp* cond;
-  Body* body;
-  DoWhileStatement(Body* b, Exp* c);
+  LoBody* lobody;                         // B/C
+  DoWhileStatement(LoBody* lb, Exp* c);
   int accept(ImpVisitor* v);
   void accept(TypeVisitor* v);
   ~DoWhileStatement();
@@ -158,11 +162,29 @@ class ForStatement : public Stm {
 public:
   string id;
   Exp* e1,*e2;
-  Body *body;
-  ForStatement(string id, Exp* e1, Exp* e2, Body* b);
+  LoBody *lobody;                         // B/C
+  ForStatement(string id, Exp* e1, Exp* e2, LoBody* lb);
   int accept(ImpVisitor* v);
   void accept(TypeVisitor* v);
   ~ForStatement();
+};
+
+// B/C
+class BreakStatement : public Stm {
+public:
+  BreakStatement();
+  int accept(ImpVisitor* v);
+  void accept(TypeVisitor* v);
+  ~BreakStatement();
+};
+
+// B/C
+class ContinueStatement : public Stm {
+public:
+  ContinueStatement();
+  int accept(ImpVisitor* v);
+  void accept(TypeVisitor* v);
+  ~ContinueStatement();
 };
 
 
@@ -176,6 +198,16 @@ public:
   ~StatementList();
 };
 
+// B/C
+class LoStatementList {
+public:
+    list<Stm*> slist;
+    LoStatementList();
+    void add(Stm* s);
+    int accept(ImpVisitor* v);
+    void accept(TypeVisitor* v);
+    ~LoStatementList();
+};
 
 class VarDec {
 public:
@@ -207,6 +239,17 @@ public:
   int accept(ImpVisitor* v);
   void accept(TypeVisitor* v);  
   ~Body();
+};
+
+// B/C
+class LoBody {
+public:
+  VarDecList* var_decs;
+  LoStatementList* slist;
+  LoBody(VarDecList* vdl, LoStatementList* sl);
+  int accept(ImpVisitor* v);
+  void accept(TypeVisitor* v);  
+  ~LoBody();
 };
 
 class Program {
