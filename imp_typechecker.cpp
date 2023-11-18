@@ -94,6 +94,7 @@ void ImpTypeChecker::visit(WhileStatement* s) {
  return;
 }
 
+// DW
 void ImpTypeChecker::visit(DoWhileStatement* s) {
   s->body->accept(this);
   if (!s->cond->accept(this).match(booltype)) {

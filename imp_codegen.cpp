@@ -122,13 +122,18 @@ int ImpCodeGen::visit(WhileStatement* s) {
   return 0;
 }
 
+// DW
 int ImpCodeGen::visit(DoWhileStatement* s) {
   string l1 = next_label();
+  string l2 = next_label();
+  string l3 = next_label();
 
   codegen(l1, "skip");
   s->body->accept(this);
   s->cond->accept(this);
-  codegen(nolabel, "jmpz", l1);
+  codegen(l2, "skip");
+  codegen(nolabel, "jmpn", l1);
+  codegen(l3, "skip");
 
   return 0;
 }

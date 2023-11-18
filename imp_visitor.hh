@@ -14,7 +14,7 @@ public:
   virtual int visit(PrintStatement* e) = 0;
   virtual int visit(IfStatement* e) = 0;
   virtual int visit(WhileStatement* e) = 0;
-  virtual int visit(DoWhileStatement* e) = 0;
+  virtual int visit(DoWhileStatement* e) = 0;     // DW
   virtual int visit(ForStatement* e) = 0;
   
   virtual int visit(BinaryExp* e) = 0;

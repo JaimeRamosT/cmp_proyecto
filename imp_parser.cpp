@@ -2,12 +2,12 @@
 
 #include "imp_parser.hh"
 
-
-const char* Token::token_names[35] = {
+// B/C
+const char* Token::token_names[37] = {
   "LPAREN" , "RPAREN", "PLUS", "MINUS", "MULT","DIV","EXP","LT","LTEQ","EQ",
   "NUM", "ID", "PRINT", "SEMICOLON", "COMMA", "ASSIGN", "CONDEXP", "IF", "THEN", "ELSE", "ENDIF", "WHILE", "DO",
   "ENDWHILE", "ERR", "END", "VAR" , "NOT", "TRUE", "FALSE", "AND", "OR"
-  "FOR", "COLON" , "ENDFOR" };
+  "FOR", "COLON" , "ENDFOR", "BREAK", "CONTINUE" };
 
 Token::Token(Type type):type(type) { lexema = ""; }
 
@@ -27,7 +27,7 @@ std::ostream& operator << ( std::ostream& outs, const Token* tok ) {
   return outs << *tok;
 }
 
-
+// B/C
 Scanner::Scanner(string s):input(s),first(0),current(0) {
   reserved["print"] = Token::PRINT;
   reserved["ifexp"] = Token::CONDEXP;
@@ -45,6 +45,8 @@ Scanner::Scanner(string s):input(s),first(0),current(0) {
   reserved["or"] = Token::OR;
   reserved["for"] = Token::FOR;
   reserved["endfor"] = Token::ENDFOR;
+  reserved["break"] = Token::BREAK;
+  reserved["continue"] = Token::CONTINUE;
   
 }
 
@@ -300,7 +302,7 @@ Stm* Parser::parseStatement() {
     if (!match(Token::ENDWHILE))
 	    parserError("Esperaba 'endwhile'");
     s = new WhileStatement(e,tb);
-  } else if (match(Token::DO)) {
+  } else if (match(Token::DO)) {      // DW
     tb = parseBody();
     if (!match(Token::WHILE)) 
       parserError("Esperata 'while'");
