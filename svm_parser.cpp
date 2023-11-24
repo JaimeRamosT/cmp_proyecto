@@ -67,6 +67,19 @@ Token* Scanner::nextToken() {
   Token::Type ttype;
   c = nextChar();
   while (c == ' ') c = nextChar();
+  // Que acepte comentarios
+  while(c == '/'){
+    c = nextChar();
+    if(c == '/'){
+        while(c != '\n'){
+          c = nextChar();
+        }
+        c = nextChar();
+    }else{
+      rollBack();
+      break;
+    }
+  }
   if (c == '\0') return new Token(Token::END);
   startLexema();
   state = 0;
