@@ -1,9 +1,10 @@
 push  5
 store 3
+push  0
 push  4
 push  10
 lt
-
+and
 store 0
 load 0
 jmpz L0
@@ -34,3 +35,20 @@ goto L2
 L3: skip
 load 4
 print
+push  3
+push  3
+sub
+L4: skip
+push  7
+push  1
+add
+jmpn L6
+load 2
+print
+L5: skip
+push  7
+push  1
+add
+jmpz L6
+goto L4
+L6: skip

@@ -1,4 +1,4 @@
-var bool a,b; //declaro variables
+var bool a,b; //declaro
 var int x,y,accum;
 y = 5;
 a = false and (4 < 10);
