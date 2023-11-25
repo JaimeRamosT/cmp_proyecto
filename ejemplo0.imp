@@ -1,7 +1,8 @@
 var bool a,b; //declaro
 var int x,y,accum;
+//var int x = 5
 y = 5;
-a = false and (4 < 10);
+a = false and (4 < 10); //asigno
 x = ifexp(a,6,7);
 accum=0;
 print(a);
@@ -10,3 +11,4 @@ print(accum);
 
 for x : 3-3, 7+1 do print(x) endfor
 
+//PRUEBA COMENTARIOS

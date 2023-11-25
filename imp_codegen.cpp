@@ -179,7 +179,7 @@ int ImpCodeGen::visit(ForStatement* s) {
   codegen(l2, "skip");
 
   return 0;
-}ñ
+}
 
 // B/C
 int ImpCodeGen::visit(BreakStatement* s) {

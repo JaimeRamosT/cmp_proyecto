@@ -57,17 +57,14 @@ Token* Scanner::nextToken() {
   c = nextChar();
   while (c == ' ' || c == '\t'  || c == '\n') c = nextChar();
   // consume comments
-  while(c == '/'){
-  c = nextChar();
-  if(c == '/'){
-      while(c != '\n'){
-        c = nextChar();
-      }
+  if (c == '/') {
+    c = nextChar();
+    if (c == '/') {
+      while (c != '\n') c = nextChar();
       c = nextChar();
-  }else{
-    rollBack();
-    break;
-  }
+    } else {
+      rollBack(); 
+    }
   }
   if (c == '\0') return new Token(Token::END);
   startLexema();

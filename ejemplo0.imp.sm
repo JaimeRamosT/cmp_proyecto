@@ -38,17 +38,19 @@ print
 push  3
 push  3
 sub
+store 2
 L4: skip
 push  7
 push  1
 add
-jmpn L6
+load 2
+lt
+jmpz L5
 load 2
 print
-L5: skip
-push  7
-push  1
+load 2
+push 1
 add
-jmpz L6
+store 2
 goto L4
-L6: skip
+L5: skip
