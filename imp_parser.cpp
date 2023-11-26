@@ -56,14 +56,17 @@ Token* Scanner::nextToken() {
   // consume whitespaces
   c = nextChar();
   while (c == ' ' || c == '\t'  || c == '\n') c = nextChar();
+
   // consume comments
-  if (c == '/') {
+  while(c == '/'){
     c = nextChar();
-    if (c == '/') {
-      while (c != '\n') c = nextChar();
-      c = nextChar();
-    } else {
-      rollBack(); 
+    if (c == '/'){
+      while (c!='\n') c=nextChar();
+      while (c == ' ' || c == '\t'  || c == '\n') c = nextChar();
+    }
+    else{
+      rollBack();
+      break;
     }
   }
   if (c == '\0') return new Token(Token::END);
