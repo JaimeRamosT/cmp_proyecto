@@ -275,7 +275,6 @@ Stm* Parser::parseStatement() {
   Body *tb, *fb;
   LoBody* lb;                             // B/C
   
-
   if (match(Token::ID)) {
     string lex = previous->lexema;
     if (!match(Token::ASSIGN)) {
