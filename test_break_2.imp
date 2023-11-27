@@ -1,0 +1,9 @@
+var int x, y;
+x = 0;
+y = 0;
+while x < 5 do
+    y = y - 1;
+    print(y);
+    x = x + 1;
+    break
+endwhile

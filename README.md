@@ -469,7 +469,8 @@ Para terminar con las modificaciones en la clase `ImpTypeChecker`, se modificaro
         return;
     }
 ```
-Se modificó la clase `ImpCodeGen` para generamos código objeto para cada iterador:
+
+Se modificó la clase `ImpCodeGen` para generar código objeto para cada iterador:
 
 ```cpp
     int ImpCodeGen::visit(WhileStatement* s) {
