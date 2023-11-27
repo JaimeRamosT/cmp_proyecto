@@ -1,0 +1,9 @@
+var int x, y, z;
+x = 0;
+y = 5;
+
+do
+x = x + 1;
+y = y*x;
+print(y)
+while x < 5
