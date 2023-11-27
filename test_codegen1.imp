@@ -1,0 +1,9 @@
+var int x, y;
+x = 0;
+y = 0;
+
+for x: 0, 10 do
+    print(y);
+    y = y - 1
+endfor
+
